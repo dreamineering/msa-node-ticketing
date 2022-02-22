@@ -12,7 +12,8 @@
     "testEnvironment": "node",
     "setupFilesAfterEnv": [
       "./src/test/setup.ts"
-    ]
+    ],
+    "testTimeout": 60000
   },
   "dependencies": {
     "@types/cookie-session": "^2.0.44",
