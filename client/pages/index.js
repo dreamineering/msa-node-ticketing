@@ -1,5 +1,30 @@
-const home = () => {
-  return <h1>Bruce Springsteen</h1>;
+import Router from "next/router";
+
+import buildClient from "../api/build-client";
+
+const Home = ({ currentUser }) => {
+  const onClick = () => {
+    Router.push("/");
+  };
+
+  return (
+    <div>
+      <h1>Home</h1>
+
+      <div>User: {currentUser?.email}</div>
+      <button className="btn" onClick={onClick}>
+        Home
+      </button>
+    </div>
+  );
 };
 
-export default home;
+// Used on full refresh from server and from app when in app
+// Cannot use getInitialProps and getServerSideProps together
+Home.getInitialProps = async (ctx) => {
+  const client = buildClient(ctx);
+  const { data } = await client.get("/api/users/currentuser");
+  return data;
+};
+
+export default Home;
