@@ -1,5 +1,4 @@
 import Router from "next/router";
-
 import buildClient from "../api/build-client";
 
 const Home = ({ currentUser }) => {
@@ -21,6 +20,7 @@ const Home = ({ currentUser }) => {
 
 // Used on full refresh from server and from app when in app
 // Cannot use getInitialProps and getServerSideProps together
+
 Home.getInitialProps = async (ctx) => {
   const client = buildClient(ctx);
   const { data } = await client.get("/api/users/currentuser");
