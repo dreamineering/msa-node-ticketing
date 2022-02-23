@@ -11,7 +11,7 @@ const Home = ({ currentUser }) => {
     <div>
       <h1>Home</h1>
 
-      <div>User: {currentUser?.email}</div>
+      <div>{currentUser ? currentUser.email : "You are not signed in"}</div>
       <button className="btn" onClick={onClick}>
         Home
       </button>
