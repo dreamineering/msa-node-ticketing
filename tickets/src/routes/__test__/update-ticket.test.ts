@@ -103,6 +103,7 @@ it("returns 200 if everything is good", async () => {
     .get(`/api/tickets/${ticket.body.id}`)
     .send();
 
+  // Assert
   expect(ticketResponse.body.title).toEqual("UnBogus");
   expect(ticketResponse.body.price).toEqual(55);
 });
