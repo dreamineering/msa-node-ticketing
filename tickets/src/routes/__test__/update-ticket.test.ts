@@ -98,4 +98,11 @@ it("returns 200 if everything is good", async () => {
       price: 55,
     })
     .expect(200);
+
+  const ticketResponse = await request(app)
+    .get(`/api/tickets/${ticket.body.id}`)
+    .send();
+
+  expect(ticketResponse.body.title).toEqual("UnBogus");
+  expect(ticketResponse.body.price).toEqual(55);
 });
