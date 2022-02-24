@@ -10,7 +10,7 @@ it("can only be accessed if the user is authenticated", async () => {
 
 it("returns status other than 401 if the user is signed in", async () => {
   const cookie = global.getAuthCookie();
-  console.log("cookie: ", cookie);
+  // console.log("cookie: ", cookie);
 
   const response = await request(app)
     .post("/api/tickets")

@@ -1,4 +1,4 @@
-import express, { Router, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import { body } from "express-validator";
 import { requireAuth, validateRequest } from "@stackmates/common";
 import { Ticket } from "../models/ticket";
@@ -21,13 +21,11 @@ router.post(
     const ticket = Ticket.build({
       title,
       price,
-      userId: req.currentUser!.id, // typescript does not know about requireAuth so OK to use!
+      userId: req.currentUser!.id,
     });
-
-    // save ticket to database
     await ticket.save();
 
-    res.sendStatus(201).send(ticket);
+    res.status(201).send(ticket);
   }
 );
 
