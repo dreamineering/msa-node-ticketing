@@ -2,6 +2,7 @@
 import request from "supertest";
 import { app } from "../../app";
 import { Ticket } from "../../models/ticket";
+import { natsWrapper } from "../../nats-wrapper";
 
 it("can only be accessed if the user is authenticated", async () => {
   // not authorised helper
@@ -61,4 +62,18 @@ it("creates a ticket with valid inputs", async () => {
   tickets = await Ticket.find({});
   expect(tickets.length).toEqual(1);
   expect(tickets[0].price).toEqual(30);
+});
+
+it("publishes an event", async () => {
+  const title = "great stuff";
+  await request(app)
+    .post("/api/tickets")
+    .set("Cookie", global.getAuthCookie())
+    .send({
+      title: title,
+      price: 30,
+    })
+    .expect(201);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });

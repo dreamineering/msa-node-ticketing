@@ -1,6 +1,7 @@
 import request from "supertest";
 import mongoose from "mongoose";
 import { app } from "../../app";
+import { natsWrapper } from "../../nats-wrapper";
 
 const createTicket = (title: string, price: number) => {
   return request(app)
@@ -106,4 +107,27 @@ it("returns 200 if everything is good", async () => {
   // Assert
   expect(ticketResponse.body.title).toEqual("UnBogus");
   expect(ticketResponse.body.price).toEqual(55);
+});
+
+it("publishes an event", async () => {
+  const userCookie = global.getAuthCookie();
+  const ticket = await request(app)
+    .post("/api/tickets")
+    .set("Cookie", userCookie)
+    .send({
+      title: "Surfboard",
+      price: 50,
+    });
+
+  // Good
+  await request(app)
+    .put(`/api/tickets/${ticket.body.id}`)
+    .set("Cookie", userCookie)
+    .send({
+      title: "UnBogus",
+      price: 55,
+    })
+    .expect(200);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });
