@@ -6,7 +6,10 @@ import {
   NotFoundError,
   NotAuthorisedError,
 } from "@stackmates/common";
+
 import { Order } from "../models/order";
+import { natsWrapper } from "../nats-wrapper";
+import { OrderCancelledPublisher } from "../events/publishers/order-cancelled-publisher";
 
 const router = express.Router();
 
@@ -16,7 +19,7 @@ router.delete(
   async (req: Request, res: Response) => {
     // cancel the order
     const { orderId } = req.params;
-    const order = await Order.findById(orderId);
+    const order = await Order.findById(orderId).populate("ticket");
 
     if (!order) {
       throw new NotFoundError("Order not found");
@@ -29,6 +32,12 @@ router.delete(
     await order.save();
 
     // publish an event that this was cancelled
+    new OrderCancelledPublisher(natsWrapper.client).publish({
+      id: order.id,
+      ticket: {
+        id: order.ticket.id,
+      },
+    });
 
     res.status(204).send(order);
   }

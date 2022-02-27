@@ -1,10 +1,12 @@
 import request from "supertest";
 import mongoose from "mongoose";
 
+// Mocked
+import { natsWrapper } from "../../nats-wrapper";
+
 import { app } from "../../app";
 import { Order } from "../../models/order";
 import { Ticket } from "../../models/ticket";
-import { natsWrapper } from "../../nats-wrapper";
 import { OrderStatus } from "@stackmates/common";
 
 it("returns an error if the ticket does not exist", async () => {
@@ -65,4 +67,21 @@ it("reserves a ticket", async () => {
   expect(response.status).toEqual(201);
 });
 
-it.todo("emits an order created event");
+it("emits an order created event", async () => {
+  // arrange
+  const ticket = Ticket.build({
+    title: "concert",
+    price: 20,
+  });
+  await ticket.save();
+
+  // act
+  await request(app)
+    .post("/api/orders")
+    .set("Cookie", global.getAuthCookie())
+    .send({ ticketId: ticket.id })
+    .expect(201);
+
+  // assert
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
+});
