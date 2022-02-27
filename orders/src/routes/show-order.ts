@@ -1,9 +1,12 @@
 import express, { Request, Response } from "express";
 
-import { requireAuth, NotFoundError } from "@stackmates/common";
+import {
+  requireAuth,
+  NotFoundError,
+  NotAuthorisedError,
+} from "@stackmates/common";
 
 import { Order } from "../models/order";
-import { NotAuthorisedError } from "./../../../common/src/errors/not-authorised-error";
 
 const router = express.Router();
 

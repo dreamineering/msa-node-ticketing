@@ -31,7 +31,7 @@ it("fetches an order", async () => {
   expect(getOrder.id).toEqual(order.id);
 });
 
-it("returns an error a user tries access another users order", async () => {
+it("returns 401 when a user tries access another users order", async () => {
   // create a ticket
   const ticket = Ticket.build({
     title: "concert",
@@ -52,5 +52,5 @@ it("returns an error a user tries access another users order", async () => {
   await request(app)
     .get(`/api/orders/${order.id}`)
     .set("Cookie", global.getAuthCookie())
-    .expect(400);
+    .expect(401);
 });
