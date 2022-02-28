@@ -51,7 +51,7 @@ it("finds, updates, and saves a ticket", async () => {
   expect(updatedTicket!.version).toEqual(data.version);
 });
 
-it("acks the message", async () => {
+it("acks the message when version sequence is valid", async () => {
   const { listener, data, msg } = await setup();
 
   // call the onMessage function with the data object + message object
@@ -59,4 +59,17 @@ it("acks the message", async () => {
 
   // write asertions to make sure ack function is called
   expect(msg.ack).toHaveBeenCalled();
+});
+
+it("won't call Ack when version sequence is not valid", async () => {
+  const { listener, data, msg } = await setup();
+
+  // call the onMessage function with the data object + message object
+  data.version = 10;
+  try {
+    await listener.onMessage(data, msg);
+  } catch (err) {}
+
+  // write asertions to make sure ack function is called
+  expect(msg.ack).not.toHaveBeenCalled();
 });
