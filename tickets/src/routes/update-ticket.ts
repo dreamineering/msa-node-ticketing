@@ -5,6 +5,7 @@ import {
   requireAuth,
   NotAuthorisedError,
   NotFoundError,
+  BadRequestError,
 } from "@stackmates/common";
 
 import { Ticket } from "../models/ticket";
@@ -28,6 +29,10 @@ router.put(
 
     if (!ticket) {
       throw new NotFoundError("No ticket here");
+    }
+
+    if (ticket.orderId) {
+      throw new BadRequestError("Cannot edit a reserved ticket");
     }
 
     if (ticket.userId !== req.currentUser!.id) {

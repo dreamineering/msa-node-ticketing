@@ -2,6 +2,7 @@ import request from "supertest";
 import mongoose from "mongoose";
 import { app } from "../../app";
 import { natsWrapper } from "../../nats-wrapper";
+import { Ticket } from "../../models/ticket";
 
 const createTicket = (title: string, price: number) => {
   return request(app)
@@ -130,4 +131,33 @@ it("publishes an event", async () => {
     .expect(200);
 
   expect(natsWrapper.client.publish).toHaveBeenCalled();
+});
+
+it("rejects updates if the ticket is reserved", async () => {
+  const userCookie = global.getAuthCookie();
+  const ticket = await request(app)
+    .post("/api/tickets")
+    .set("Cookie", userCookie)
+    .send({
+      title: "Surfboard",
+      price: 50,
+    });
+
+  // Add an orderId to the ticket to make it reserved
+  const editTicket = await Ticket.findById(ticket.body.id);
+  editTicket!.set({
+    orderId: new mongoose.Types.ObjectId().toHexString(),
+  });
+  editTicket!.save();
+
+  // Should not be able to save because the ticket has an orderId
+  // and their is logic to protect edting a "reserved" ticket
+  await request(app)
+    .put(`/api/tickets/${ticket.body.id}`)
+    .set("Cookie", userCookie)
+    .send({
+      title: "UnBogus",
+      price: 55,
+    })
+    .expect(400);
 });
