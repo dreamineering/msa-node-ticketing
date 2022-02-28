@@ -6,7 +6,9 @@ import { Order } from "../../models/order";
 import { Ticket } from "../../models/ticket";
 
 const buildTicket = async () => {
+  const id = new mongoose.Types.ObjectId().toHexString();
   const ticket = Ticket.build({
+    id: id,
     title: "concert",
     price: 20,
   });

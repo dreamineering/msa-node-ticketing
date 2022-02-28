@@ -9,9 +9,10 @@ import { Order } from "../../models/order";
 import { Ticket } from "../../models/ticket";
 import { OrderStatus } from "@stackmates/common";
 
+const ticketId = new mongoose.Types.ObjectId().toHexString();
+
 it("returns an error if the ticket does not exist", async () => {
   // arrange
-  const ticketId = new mongoose.Types.ObjectId().toHexString();
 
   // act
   const response = await request(app)
@@ -26,6 +27,7 @@ it("returns an error if the ticket does not exist", async () => {
 it("returns an error if the ticket is reserved", async () => {
   // arrange
   const ticket = Ticket.build({
+    id: ticketId,
     title: "concert",
     price: 20,
   });
@@ -52,6 +54,7 @@ it("returns an error if the ticket is reserved", async () => {
 it("reserves a ticket", async () => {
   // arrange
   const ticket = Ticket.build({
+    id: ticketId,
     title: "concert",
     price: 20,
   });
@@ -70,6 +73,7 @@ it("reserves a ticket", async () => {
 it("emits an order created event", async () => {
   // arrange
   const ticket = Ticket.build({
+    id: ticketId,
     title: "concert",
     price: 20,
   });

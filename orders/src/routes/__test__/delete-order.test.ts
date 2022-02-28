@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import request from "supertest";
 
 import { OrderStatus } from "@stackmates/common";
@@ -9,6 +10,8 @@ import { app } from "../../app";
 import { Ticket } from "../../models/ticket";
 import { Order } from "../../models/order";
 
+const ticketId = new mongoose.Types.ObjectId().toHexString();
+
 it.todo("has 400 if an order cannot be found");
 
 it.todo("has 404 if a User that is not an Owner tries to cancel an Order");
@@ -16,6 +19,7 @@ it.todo("has 404 if a User that is not an Owner tries to cancel an Order");
 it("marks an order as cancelled", async () => {
   // create a ticket with Ticket Model
   const ticket = Ticket.build({
+    id: ticketId,
     title: "concert",
     price: 20,
   });
@@ -43,6 +47,7 @@ it("marks an order as cancelled", async () => {
 it("emits an OrderCancelled event", async () => {
   // create a ticket with Ticket Model
   const ticket = Ticket.build({
+    id: ticketId,
     title: "concert",
     price: 20,
   });
