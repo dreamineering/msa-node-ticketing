@@ -1,16 +1,16 @@
-import Router from "next/router";
-// import buildClient from "../api/build-client";
+import Link from "next/link";
 
 const Home = ({ currentUser, tickets }) => {
-  const onClick = () => {
-    Router.push("/");
-  };
-
   const ticketList = tickets.map((ticket) => {
     return (
       <tr key={ticket.id}>
         <td>{ticket.title}</td>
         <td>{ticket.price}</td>
+        <td>
+          <Link href={`/tickets/${encodeURIComponent(ticket.id)}`}>
+            <a>View</a>
+          </Link>
+        </td>
       </tr>
     );
   });
@@ -24,6 +24,7 @@ const Home = ({ currentUser, tickets }) => {
           <tr>
             <th>Title</th>
             <th>Price</th>
+            <th>Link</th>
           </tr>
         </thead>
         <tbody>{ticketList}</tbody>
