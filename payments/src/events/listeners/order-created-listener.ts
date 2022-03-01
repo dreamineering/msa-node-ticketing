@@ -8,10 +8,7 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
   queueGroupName = queueGroupName;
 
   async onMessage(data: OrderCreatedEvent["data"], msg: Message) {
-    console.log(
-      "payments-service - OrderCreatedListener - onMessage - data: ",
-      data
-    );
+    console.log("payments-service - OrderCreatedListener - onMessage");
     const order = await Order.build({
       id: data.id,
       version: data.version,
