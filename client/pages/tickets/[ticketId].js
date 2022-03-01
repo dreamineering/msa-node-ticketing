@@ -1,6 +1,9 @@
 import { useRequest } from "../../hooks/use-request";
+import { useRouter } from "next/router";
 
 const ShowTicket = ({ ticket }) => {
+  const router = useRouter();
+
   const { doRequest, errors } = useRequest({
     url: `/api/orders`,
     method: "post",
@@ -8,16 +11,24 @@ const ShowTicket = ({ ticket }) => {
       ticketId: ticket.id,
     },
     onSuccess: (order) => {
-      console.log("order", order);
+      router.push({
+        pathname: "/orders/[orderId]",
+        query: { orderId: order.id },
+      });
     },
   });
+
+  const test = () => {
+    doRequest();
+    console.log("test");
+  };
 
   return (
     <div className="">
       <h1>Ticket</h1>
       <div>{ticket.title}</div>
       <div>{ticket.price}</div>
-      <button className="btn btn-primary" onClick={doRequest}>
+      <button className="btn btn-primary" onClick={test}>
         Purchase
       </button>
       {errors}
