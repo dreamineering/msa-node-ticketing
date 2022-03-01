@@ -6,6 +6,7 @@ import {
   BadRequestError,
   NotFoundError,
   OrderStatus,
+  NotAuthorisedError,
 } from "@stackmates/common";
 import { Order } from "../models/order";
 
@@ -26,7 +27,7 @@ router.post(
 
     // requireAuth has already checked that currentUser is set
     if (order.userId !== req.currentUser!.id) {
-      throw new BadRequestError("Order does not belong to this user");
+      throw new NotAuthorisedError();
     }
 
     // Make sure the order is not already cancelled or complete
