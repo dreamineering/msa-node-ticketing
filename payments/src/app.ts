@@ -8,6 +8,8 @@ import cookieSession from "cookie-session";
 
 import { NotFoundError, currentUser, errorHandler } from "@stackmates/common";
 
+import { createPaymentRouter } from "./routes/new-payment";
+
 const app = express();
 app.set("trust proxy", true);
 app.use(json());
@@ -19,6 +21,9 @@ app.use(
   })
 );
 app.use(currentUser);
+
+// app routes
+app.use(createPaymentRouter);
 
 app.all("*", async () => {
   // console.log("ticket app: route not found");
