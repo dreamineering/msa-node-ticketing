@@ -1,19 +1,34 @@
 import Router from "next/router";
 // import buildClient from "../api/build-client";
 
-const Home = ({ currentUser }) => {
+const Home = ({ currentUser, tickets }) => {
   const onClick = () => {
     Router.push("/");
   };
 
+  const ticketList = tickets.map((ticket) => {
+    return (
+      <tr key={ticket.id}>
+        <td>{ticket.title}</td>
+        <td>{ticket.price}</td>
+      </tr>
+    );
+  });
+
   return (
     <div>
-      <h1>Home</h1>
+      <h1>Tickets</h1>
 
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>{ticketList}</tbody>
+      </table>
       <div>{currentUser ? currentUser.email : "You are not signed in"}</div>
-      <button className="btn" onClick={onClick}>
-        Home
-      </button>
     </div>
   );
 };
@@ -22,10 +37,8 @@ const Home = ({ currentUser }) => {
 // Cannot use getInitialProps and getServerSideProps together
 
 Home.getInitialProps = async (ctx, client, currentUser) => {
-  // const client = buildClient(ctx);
-  // const { data } = await client.get("/api/users/currentuser");
-  // return data;
-  return {};
+  const { data } = await client.get("/api/tickets");
+  return { tickets: data };
 };
 
 export default Home;
