@@ -25,6 +25,10 @@ export class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent
       throw new Error("Order not found");
     }
 
+    if (order.status === OrderStatus.Complete) {
+      return msg.ack();
+    }
+
     // don't need to set ticket to null as logic in the ticket model
     // does not look for tickets where the status is cancelled
     order.set({ status: OrderStatus.Cancelled });
