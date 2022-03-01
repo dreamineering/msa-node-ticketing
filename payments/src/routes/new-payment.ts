@@ -9,6 +9,7 @@ import {
   NotAuthorisedError,
 } from "@stackmates/common";
 import { Order } from "../models/order";
+import { Payment } from "../models/payment";
 import { stripe } from "../stripe";
 
 const router = express.Router();
@@ -41,12 +42,18 @@ router.post(
       throw new BadRequestError("Order is already completed");
     }
 
-    await stripe.charges.create({
+    const charge = await stripe.charges.create({
       currency: "usd",
       amount: order.price * 100,
       source: token,
       description: `Charge for order ${order.id}`,
     });
+
+    const payment = Payment.build({
+      orderId: order.id,
+      stripeId: charge.id,
+    });
+    await payment.save();
 
     res.status(201).send({ success: true });
   }

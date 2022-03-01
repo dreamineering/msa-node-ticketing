@@ -8,6 +8,11 @@ declare global {
 
 jest.mock("../nats-wrapper");
 
+// If not using Mock to test Stripe use this option
+// can't use k8s in the testing environment
+// so need to get a copy of secret key from local env variables
+// process.env.STR?IPE_KEY = "sk_test_";
+
 let mongo: any;
 
 beforeAll(async () => {
