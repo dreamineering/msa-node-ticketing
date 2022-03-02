@@ -5,9 +5,9 @@ const buildClient = ({ req }) => {
     // SERVICE.NAMESPACE.svc.cluster.local
     // kubectl get services -n ingress-nginx
     // kubectl get namespace
+    // "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local",
     return axios.create({
-      baseURL:
-        "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local",
+      baseURL: "http://unfamoustours.com",
       headers: req.headers,
     });
   } else {
